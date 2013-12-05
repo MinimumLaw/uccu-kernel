@@ -4453,7 +4453,7 @@ static void clk_tree_init(void)
 	}
 }
 
-
+#if defined(CONFIG_ARCH_MX51)
 int __init mx51_clocks_init(unsigned long ckil, unsigned long osc, unsigned long ckih1, unsigned long ckih2)
 {
 	__iomem void *base;
@@ -4774,7 +4774,9 @@ int __init mx51_clocks_init(unsigned long ckil, unsigned long osc, unsigned long
 
 	return 0;
 }
+#endif /* defined(CONFIG_ARCH_MX51) */
 
+#if defined(CONFIG_ARCH_MX53)
 int __init mx53_clocks_init(unsigned long ckil, unsigned long osc, unsigned long ckih1, unsigned long ckih2)
 {
 	__iomem void *base;
@@ -5044,6 +5046,8 @@ int __init mx53_clocks_init(unsigned long ckil, unsigned long osc, unsigned long
 
 	return 0;
 }
+#endif /* defined(CONFIG_ARCH_MX53) */
+
 
 /*!
  * Setup cpu clock based on working point.
