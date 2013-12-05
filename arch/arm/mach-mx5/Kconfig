@@ -42,9 +42,17 @@ config MACH_MX51_BABBAGE
 	  u-boot. This includes specific configurations for the board and its
 	  peripherals.
 
-config MACH_MX51_BABBAGE_PROC_GPIO
+config MACH_MX51_RAVION
+	bool "Support MX51 RAVION UCCU platforms"
+	select ARCH_MX51
+	help
+	  Include support for MX51 Ravion platform, also known as MX51RAV in
+	  u-boot. This includes specific configurations for the board and its
+	  peripherals.
+
+config MACH_MX51_RAVION_PROC_GPIO
 	tristate "Support proc interface for GPIO handling"
-	depends on MACH_MX51_BABBAGE
+	depends on MACH_MX51_RAVION
 	help
 	  Use /proc/gpios/name special files for switch GPIO on/off
 
