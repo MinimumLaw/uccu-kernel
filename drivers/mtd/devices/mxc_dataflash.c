@@ -228,7 +228,12 @@ static int dataflash_erase(struct mtd_info *mtd, struct erase_info *instr)
 
 	command = priv->command;
 
-	mutex_lock(&priv->lock);
+	if(mutex_trylock(&priv->lock) == 0)
+	{
+		printk(KERN_INFO "%s: locked.\n", __func__);
+		mutex_lock(&priv->lock);
+	}
+	
 	while (instr->len > 0) {
 		unsigned int pageaddr;
 		int status;
@@ -315,7 +320,11 @@ static int dataflash_read(struct mtd_info *mtd, loff_t from, size_t len,
 	addr = (((unsigned)from / priv->page_size) << priv->page_offset)
 	    + ((unsigned)from % priv->page_size);
 
-	mutex_unlock(&priv->lock);
+	if(mutex_trylock(&priv->lock) == 0)
+	{
+		printk(KERN_INFO "%s: locked.\n", __func__);
+		mutex_lock(&priv->lock);
+	}
 
 	while (len > 0) {
 
@@ -329,6 +338,7 @@ static int dataflash_read(struct mtd_info *mtd, loff_t from, size_t len,
 
 		status = spi_read_write(spi, txer,
 					roundup(rx_len, 4) + cmd_len);
+
 		if (status) {
 			mutex_unlock(&priv->lock);
 			return status;
@@ -418,7 +428,11 @@ static int dataflash_write(struct mtd_info *mtd, loff_t to, size_t len,
 	else
 		writelen = len;
 
-	mutex_lock(&priv->lock);
+	if(mutex_trylock(&priv->lock) == 0)
+	{
+		printk(KERN_INFO "%s: locked.\n", __func__);
+		mutex_lock(&priv->lock);
+	}
 
 	while (remaining > 0) {
 		DEBUG(MTD_DEBUG_LEVEL3, "write @ %i:%i len=%i\n",
@@ -598,6 +612,12 @@ static ssize_t otp_read(struct spi_device *spi, unsigned base,
 	if (!d)
 		return -ENOMEM;
 
+	if(mutex_trylock(&priv->lock) == 0)
+	{
+		printk(KERN_INFO "%s: locked.\n", __func__);
+		mutex_lock(&priv->lock);
+	}
+	
 	while (l > 0) {
 
 		rx_len = l > (SPI_FIFOSIZE - cmd_len) ?
@@ -646,7 +666,11 @@ static int dataflash_read_fact_otp(struct mtd_info *mtd,
 	int status;
 
 	/* 64 bytes, from 0..63 ... start at 64 on-chip */
-	mutex_lock(&priv->lock);
+	if(mutex_trylock(&priv->lock) == 0)
+	{
+		printk(KERN_INFO "%s: locked.\n", __func__);
+		mutex_lock(&priv->lock);
+	}
 	status = otp_read(priv->spi, 64, buf, from, len);
 	mutex_unlock(&priv->lock);
 
@@ -664,7 +688,11 @@ static int dataflash_read_user_otp(struct mtd_info *mtd,
 	int status;
 
 	/* 64 bytes, from 0..63 ... start at 0 on-chip */
-	mutex_lock(&priv->lock);
+	if(mutex_trylock(&priv->lock) == 0)
+	{
+		printk(KERN_INFO "%s: locked.\n", __func__);
+		mutex_lock(&priv->lock);
+	}
 	status = otp_read(priv->spi, 0, buf, from, len);
 	mutex_unlock(&priv->lock);
 

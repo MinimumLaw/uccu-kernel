@@ -112,7 +112,7 @@ ipu_csi_init_interface(uint16_t width, uint16_t height, uint32_t pixel_fmt,
 		__raw_writel(0x40030, CSI_CCIR_CODE_1(csi));
 		__raw_writel(0xFF0000, CSI_CCIR_CODE_3(csi));
 	} else if (cfg_param.clk_mode == IPU_CSI_CLK_MODE_CCIR656_INTERLACED) {
-		if (width == 720 && height == 625) {
+		if (width == 720 && height == 576) {
 			/* PAL case */
 			/*
 			 * Field0BlankEnd = 0x6, Field0BlankStart = 0x2,

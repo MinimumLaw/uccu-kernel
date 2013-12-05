@@ -793,11 +793,28 @@ static void adv7180_hard_reset(void)
 	/*! Set YPbPr input on AIN1,4,5 and normal
 	 * operations(autodection of all stds).
 	 */
-	adv7180_write_reg(ADV7180_INPUT_CTL, 0x09);
+
+	// NJM Patch for ADV7180
+	//adv7180_write_reg(ADV7180_INPUT_CTL, 0x09);
 
 	/*! Datasheet recommends: */
-	adv7180_write_reg(ADV7180_VSYNC_FIELD_CTL_1, 0x02);
-	adv7180_write_reg(ADV7180_MANUAL_WIN_CTL, 0xa2);
+	//adv7180_write_reg(ADV7180_VSYNC_FIELD_CTL_1, 0x02);
+	//adv7180_write_reg(ADV7180_MANUAL_WIN_CTL, 0xa2);
+
+	adv7180_write_reg(0x00, 0x30);
+//	adv7180_write_reg(0x2C, 0xCE);
+
+	adv7180_write_reg(0x04, 0x57);
+//	adv7180_write_reg(0x14, 0x02);//12
+
+	adv7180_write_reg(0x17, 0x41);//f8
+	adv7180_write_reg(0x31, 0x02);//0a
+	adv7180_write_reg(0x3D, 0xA2);
+	adv7180_write_reg(0x3E, 0x6A);
+	adv7180_write_reg(0x3F, 0xA0);
+	adv7180_write_reg(0x0E, 0x80);
+	adv7180_write_reg(0x55, 0x81);
+	adv7180_write_reg(0x0E, 0x00);
 }
 
 /*! ADV7180 I2C attach function.
@@ -881,8 +898,13 @@ static int adv7180_probe(struct i2c_client *client,
 	adv7180_data.streamcap.timeperframe.numerator = 1;
 	adv7180_data.std_id = V4L2_STD_ALL;
 	video_idx = ADV7180_NOT_LOCKED;
-	adv7180_data.pix.width = video_fmts[video_idx].raw_width;
-	adv7180_data.pix.height = video_fmts[video_idx].raw_height;
+
+	/* DIMAS: gstreamer vertical synchro patch */
+	//adv7180_data.pix.width = video_fmts[video_idx].raw_width;
+	//adv7180_data.pix.height = video_fmts[video_idx].raw_height;
+	adv7180_data.pix.width = video_fmts[video_idx].active_width;
+	adv7180_data.pix.height = video_fmts[video_idx].active_height;
+
 	adv7180_data.pix.pixelformat = V4L2_PIX_FMT_UYVY;  /* YUV422 */
 	adv7180_data.pix.priv = 1;  /* 1 is used to indicate TV in */
 	adv7180_data.on = true;

@@ -261,7 +261,7 @@ static struct mxc_spi_unique_def spi_ver_2_3 = {
 	.drctrl_shift = 16,
 	.xfer_complete = (1 << 7),
 	.bc_overflow = 0,
-	.fifo_size = 64,
+	.fifo_size = 1,
 	.ctrl_reg_addr = 4,
 	.stat_reg_addr = 0x18,
 	.period_reg_addr = 0x1C,
@@ -516,11 +516,17 @@ static unsigned int spi_find_baudrate(struct mxc_spi *master_data,
 		shift++;
 
 	if (master_data->spi_ver_def == &spi_ver_0_0) {
-		shift = (shift - 1) * 2;
+		if(shift > 1)
+			shift = (shift - 1) * 2;
+		else
+			shift = 0;
 	} else if (master_data->spi_ver_def == &spi_ver_2_3) {
 		shift = shift;
 	} else {
-		shift -= 2;
+		if(shift > 2)
+			shift -= 2;
+		else
+			shift = 0;
 	}
 
 	if (shift > master_data->spi_ver_def->max_data_rate)
@@ -640,6 +646,7 @@ void mxc_spi_chipselect(struct spi_device *spi, int is_active)
 		__raw_writel(ctrl_reg, master_drv_data->base + MXC_CSPICTRL);
 		__raw_writel(config_reg,
 			     MXC_CSPICONFIG + master_drv_data->ctrl_addr);
+		__raw_writel(MXC_CSPIPERIOD_32KHZ + 0x7FF, master_drv_data->period_addr);
 	} else {
 		/* Control Register Settings for transfer to this slave */
 		ctrl_reg = master_drv_data->spi_ver_def->spi_enable;
@@ -717,8 +724,6 @@ static irqreturn_t mxc_spi_isr(int irq, void *dev_id)
 	fifo_size = master_drv_data->spi_ver_def->fifo_size;
 	pass_counter = fifo_size;
 
-	/* Read the interrupt status register to determine the source */
-	status = __raw_readl(master_drv_data->stat_addr);
 	do {
 		u32 rx_tmp =
 		    __raw_readl(master_drv_data->base + MXC_CSPIRXDATA);
@@ -739,7 +744,9 @@ static irqreturn_t mxc_spi_isr(int irq, void *dev_id)
 		   master_drv_data->spi_ver_def->int_status_dif)));
 
 	if (master_drv_data->transfer.rx_count)
+	{
 		return ret;
+	}
 
 	if (master_drv_data->transfer.count) {
 		if (master_drv_data->transfer.tx_buf) {
@@ -879,6 +886,7 @@ int mxc_spi_transfer(struct spi_device *spi, struct spi_transfer *t)
 						    MXC_CSPICTRL_CSMASK) + 1);
 
 	clk_enable(master_drv_data->clk);
+
 	/* Modify the Tx, Rx, Count */
 	master_drv_data->transfer.tx_buf = t->tx_buf;
 	master_drv_data->transfer.rx_buf = t->rx_buf;
@@ -889,8 +897,9 @@ int mxc_spi_transfer(struct spi_device *spi, struct spi_transfer *t)
 	/* Enable the Rx Interrupts */
 
 	spi_enable_interrupt(master_drv_data,
-			     1 << (MXC_CSPIINT_RREN_SHIFT +
-				   master_drv_data->spi_ver_def->rx_inten_dif));
+				1 << (MXC_CSPIINT_RREN_SHIFT +
+				master_drv_data->spi_ver_def->rx_inten_dif)); 
+	
 	count = (t->len > fifo_size) ? fifo_size : t->len;
 
 	/* Perform Tx transaction */
@@ -901,11 +910,10 @@ int mxc_spi_transfer(struct spi_device *spi, struct spi_transfer *t)
 	wait_for_completion(&master_drv_data->xfer_done);
 
 	/* Disable the Rx Interrupts */
-
 	spi_disable_interrupt(master_drv_data,
-			      1 << (MXC_CSPIINT_RREN_SHIFT +
-				    master_drv_data->spi_ver_def->
-				    rx_inten_dif));
+				1 << (MXC_CSPIINT_RREN_SHIFT +
+				master_drv_data->spi_ver_def->
+				rx_inten_dif));
 
 	clk_disable(master_drv_data->clk);
 	if (master_drv_data->chipselect_inactive)

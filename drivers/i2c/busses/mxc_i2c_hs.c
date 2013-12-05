@@ -214,7 +214,6 @@ static int mxci2c_wait_writefifo(mxc_i2c_hs *i2c_hs)
 			}
 		}
 	}
-
 	if (retry <= 0) {
 		printk(KERN_ERR "%s:wait error\n", __func__);
 		ret = -1;
@@ -430,6 +429,7 @@ static int mxci2c_hs_probe(struct platform_device *pdev)
 	i2c_hs->reg_base_phy = res->start;
 
 	i2c_hs->ipg_clk = clk_get(&pdev->dev, "hsi2c_clk");
+
 	i2c_hs->serial_clk = clk_get(&pdev->dev, "hsi2c_serial_clk");
 
 	/*

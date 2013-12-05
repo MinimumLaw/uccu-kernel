@@ -28,14 +28,15 @@
 #include <linux/mmc/sdio_func.h>
 #include <linux/mmc/sdio_ids.h>
 #include <linux/mmc/card.h>
-#include <plat/gpio.h>
+#include <linux/gpio.h>
 
 #include "wl1271.h"
 #include "wl12xx_80211.h"
 #include "wl1271_io.h"
 
+#define BABBAGE_WIRELESS_IRQ		(1*32 + 19)	/* GPIO_2_19 */
 
-#define RX71_WL1271_IRQ_GPIO		42
+#define RX71_WL1271_IRQ_GPIO		BABBAGE_WIRELESS_IRQ
 
 #ifndef SDIO_VENDOR_ID_TI
 #define SDIO_VENDOR_ID_TI		0x0097

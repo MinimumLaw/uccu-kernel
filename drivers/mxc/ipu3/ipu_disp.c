@@ -653,6 +653,10 @@ int _ipu_disp_chan_is_interlaced(ipu_channel_t channel)
 	else if ((channel == MEM_BG_SYNC) || (channel == MEM_FG_SYNC))
 		return !!(__raw_readl(DC_WR_CH_CONF_5) &
 			  DC_WR_CH_CONF_FIELD_MODE);
+
+	if(channel == CSI_PRP_ENC_MEM)
+		return 1;
+
 	return 0;
 }
 
