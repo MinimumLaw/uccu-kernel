@@ -379,8 +379,8 @@ static int mc13892_regulator_init(struct mc13892 *mc13892)
 		pmic_write_reg(REG_SW_5, value, 0xffffff);
 	}
 
-	/* Enable coin cell charger */
-	value = BITFVAL(COINCHEN, 1) | BITFVAL(VCOIN, VCOIN_3_0V);
+	/* Disable coin cell charger */
+	value = BITFVAL(COINCHEN, 0) | BITFVAL(VCOIN, VCOIN_3_0V);
 	register_mask = BITFMASK(COINCHEN) | BITFMASK(VCOIN);
 	pmic_write_reg(REG_POWER_CTL0, value, register_mask);
 
