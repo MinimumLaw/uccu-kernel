@@ -42,7 +42,7 @@ static uart_mxc_port mxc_ports[] = {
 			.line = 0,
 			},
 	       .ints_muxed = 1,
-	       .mode = MODE_DCE,
+	       .mode = MODE_DTE,
 	       .ir_mode = NO_IRDA,
 	       .enabled = 1,
 	       .cts_threshold = UART1_UCR4_CTSTL,
