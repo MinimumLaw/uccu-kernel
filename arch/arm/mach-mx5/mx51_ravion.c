@@ -214,16 +214,19 @@ static iomux_v3_cfg_t mx51babbage_pads[] = {
 
 	MX51_PAD_DI1_D1_CS__GPIO3_4,
 #endif
-//	FixMe: What is it? Separete interface?
-//	MX51_PAD_I2C1_CLK__HSI2C_CLK,
-//	MX51_PAD_I2C1_DAT__HSI2C_DAT,
+	/* HSI2C not used on RAVION board, let's GPIO */
+	MX51_PAD_I2C1_CLK__GPIO4_16,
+	MX51_PAD_I2C1_DAT__GPIO4_17,
+
+	/* I2C1 */
 	MX51_PAD_EIM_D16__I2C1_SDA,
 	MX51_PAD_EIM_D19__I2C1_SCL,
 
-	MX51_PAD_GPIO1_2__PWM1_PWMO,
-
+	/* I2C2 */
 	MX51_PAD_KEY_COL5__I2C2_SDA,
 	MX51_PAD_KEY_COL4__I2C2_SCL,
+
+	MX51_PAD_GPIO1_2__PWM1_PWMO,
 
 	MX51_PAD_SD1_CMD__SD1_CMD,
 	MX51_PAD_SD1_CLK__SD1_CLK,
@@ -258,8 +261,7 @@ static iomux_v3_cfg_t mx51babbage_pads[] = {
 
 	/* CAN */
 	MX51_PAD_EIM_A24__GPIO2_18, /* SION required */
-//	FixMe: What is it? No this pin mode in iomux?
-//	MX51_PAD_EIM_A26__CAN_IRQ,
+	MX51_PAD_EIM_A26__GPIO2_20, /* CAN IRQ */
 
 	MX51_PAD_DI1_PIN12__GPIO3_1, /* SION required */
 	MX51_PAD_DI1_D0_CS__GPIO3_3, /* SION required */     /* LVDS power down */
@@ -502,11 +504,6 @@ static struct mxc_i2c_platform_data mxci2c_hs_data = {
 	.i2c_clk = 400000,
 };
 
-/* FixMe: removed for build 
-static struct mxc_srtc_platform_data srtc_data = {
-	.srtc_sec_mode_addr = 0x83F98840,
-}; */
-
 static struct tve_platform_data tve_data = {
 	.dac_reg = "VVIDEO",
 };
@@ -533,8 +530,6 @@ static struct mxc_dvfs_platform_data dvfs_core_data = {
 	.upcnt_val = 10,
 	.dncnt_val = 10,
 	.delay_time = 30,
-/* FixMe: removed
-	.num_wp = 3, */
 };
 
 static struct mxc_dvfsper_data dvfs_per_data = {
@@ -919,8 +914,7 @@ static struct spi_board_info mxc_mcp2515x_device[] __initdata = {
 	 .mode = SPI_MODE_0,
 	 .bus_num = 1,
 	 .chip_select = 2,
-/* FixMe: removed
-	 .irq = IOMUX_TO_IRQ_V3(BABBAGE_CAN_IRQ), */
+	 .irq = gpio_to_irq(BABBAGE_CAN_IRQ), 
 	 .platform_data = &mxc_mcp251x_pdata,
 	},
 };
@@ -1005,8 +999,7 @@ static struct mxc_audio_platform_data sgtl5000_data = {
 	.ssi_num = 1,
 	.src_port = 2,
 	.ext_port = 3,
-/* FixMe: removed
-	.hp_irq = IOMUX_TO_IRQ_V3(BABBAGE_HEADPHONE_DET), */
+	.hp_irq = gpio_to_irq(BABBAGE_HEADPHONE_DET),
 	.hp_status = headphone_det_status,
 	.amp_enable = mxc_sgtl5000_amp_enable,
 	.clock_enable = mxc_sgtl5000_clock_enable,
@@ -1312,8 +1305,7 @@ static void __init mx51_utsvu_mcp251x_init(void)
 	if( (gpio_request(BABBAGE_CAN_IRQ, "MCP 251x CAN INT") == 0) && (gpio_direction_input(BABBAGE_CAN_IRQ) == 0) )
 	{
 		gpio_export(BABBAGE_CAN_IRQ, 0);
-/* FixMe: removed
-		set_irq_type(IOMUX_TO_IRQ_V3(BABBAGE_CAN_IRQ), IRQ_TYPE_EDGE_FALLING); */
+		set_irq_type(gpio_to_irq(BABBAGE_CAN_IRQ), IRQ_TYPE_EDGE_FALLING);
 	}
 	else
 	{
@@ -1330,8 +1322,7 @@ static void __init mx51_utsvu_wireless_for_tiwi_init(void)
 	if( (gpio_request(BABBAGE_WIRELESS_IRQ, "WIRELESS INT") == 0) && (gpio_direction_input(BABBAGE_WIRELESS_IRQ) == 0) )
 	{
 		gpio_export(BABBAGE_WIRELESS_IRQ, 0);
-/* FixMe: removed
-		set_irq_type(IOMUX_TO_IRQ_V3(BABBAGE_WIRELESS_IRQ), IRQ_TYPE_EDGE_RISING); */
+		set_irq_type(gpio_to_irq(BABBAGE_WIRELESS_IRQ), IRQ_TYPE_EDGE_RISING);
 	}
 	else
 	{
@@ -1397,11 +1388,10 @@ static void __init mxc_board_init(void)
 	mxc_spdif_data.spdif_core_clk = clk_get(NULL, "spdif_xtal_clk");
 	clk_put(mxc_spdif_data.spdif_core_clk);
 	/* SD card detect irqs */
-/* FixMe: removed
-	mxcsdhc2_device.resource[2].start = IOMUX_TO_IRQ_V3(BABBAGE_SD2_CD);
-	mxcsdhc2_device.resource[2].end = IOMUX_TO_IRQ_V3(BABBAGE_SD2_CD);
-	mxcsdhc1_device.resource[2].start = IOMUX_TO_IRQ_V3(BABBAGE_SD1_CD);
-	mxcsdhc1_device.resource[2].end = IOMUX_TO_IRQ_V3(BABBAGE_SD1_CD); */
+	mxcsdhc2_device.resource[2].start = gpio_to_irq(BABBAGE_SD2_CD);
+	mxcsdhc2_device.resource[2].end = gpio_to_irq(BABBAGE_SD2_CD);
+	mxcsdhc1_device.resource[2].start = gpio_to_irq(BABBAGE_SD1_CD);
+	mxcsdhc1_device.resource[2].end = gpio_to_irq(BABBAGE_SD1_CD);
 
 	mxc_cpu_common_init();
 	mx51_babbage_io_init();
@@ -1435,7 +1425,7 @@ static void __init mxc_board_init(void)
 	mxc_register_device(&mxci2c_devices[0], &mxci2c_data);
 	mxc_register_device(&mxci2c_devices[1], &mxci2c_data);
 	mxc_register_device(&mxci2c_hs_device, &mxci2c_hs_data);
-	mxc_register_device(&mxc_rtc_device, NULL); // See FixMe: above &srtc_data);
+	mxc_register_device(&mxc_rtc_device, NULL);
 	mxc_register_device(&mxc_w1_master_device, &mxc_w1_data);
 	mxc_register_device(&mxc_ipu_device, &mxc_ipu_data);
 	mxc_register_device(&mxc_tve_device, &tve_data);
