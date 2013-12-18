@@ -49,6 +49,8 @@
 #include <mach/mxc_edid.h>
 #include <mach/iomux-mx51.h>
 #include <mach/i2c.h>
+#include <mach/mxc_iim.h>
+#include <mach/check_fuse.h>
 
 #include "devices.h"
 #include "crm_regs.h"
@@ -104,7 +106,9 @@
 extern int __init mx51_babbage_init_mc13892(void);
 extern struct cpu_wp *(*get_cpu_wp)(int *wp);
 extern void (*set_num_cpu_wp)(int num);
-static int num_cpu_wp = 3;
+extern struct dvfs_wp *(*get_dvfs_core_wp)(int *wp);
+
+static int num_cpu_wp;
 
 static iomux_v3_cfg_t mx51babbage_pads[] = {
 	/* UART1 */
@@ -379,13 +383,19 @@ static struct fb_videomode video_modes[] = {
 	 0,},
 };
 
-struct cpu_wp *mx51_babbage_get_cpu_wp(int *wp)
+static struct dvfs_wp *mx51_ravion_get_dvfs_core_table(int *wp)
+{
+	*wp = ARRAY_SIZE(dvfs_core_setpoint);
+        return dvfs_core_setpoint;
+}
+
+struct cpu_wp *mx51_ravion_get_cpu_wp(int *wp)
 {
 	*wp = num_cpu_wp;
 	return cpu_wp_auto;
 }
 
-void mx51_babbage_set_num_cpu_wp(int num)
+void mx51_ravion_set_num_cpu_wp(int num)
 {
 	num_cpu_wp = num;
 	return;
@@ -429,7 +439,7 @@ static struct mxc_vpu_platform_data mxc_vpu_data = {
 };
 
 /* workaround for ecspi chipselect pin may not keep correct level when idle */
-static void mx51_babbage_gpio_ecspi_chipselect_active(int cspi_mode, int status,
+static void mx51_ravion_gpio_ecspi_chipselect_active(int cspi_mode, int status,
 					     int chipselect)
 {
 	switch (cspi_mode) {
@@ -462,7 +472,7 @@ static void mx51_babbage_gpio_ecspi_chipselect_active(int cspi_mode, int status,
 	}
 }
 
-static void mx51_babbage_gpio_ecspi_chipselect_inactive(int cspi_mode, int status,
+static void mx51_ravion_gpio_ecspi_chipselect_inactive(int cspi_mode, int status,
 					       int chipselect)
 {
 	switch (cspi_mode) {
@@ -488,13 +498,13 @@ static void mx51_babbage_gpio_ecspi_chipselect_inactive(int cspi_mode, int statu
 	}
 }
 
-static void mx51_babbage_cspi_chipselect_active(int cspi_mode, int status,
+static void mx51_ravion_cspi_chipselect_active(int cspi_mode, int status,
 					     int chipselect)
 {
 	//pr_info("DIMAS: CS act\n");
 }
 
-static void mx51_babbage_cspi_chipselect_inactive(int cspi_mode, int status,
+static void mx51_ravion_cspi_chipselect_inactive(int cspi_mode, int status,
 					       int chipselect)
 {
 	//pr_info("DIMAS: CS inact\n");
@@ -503,15 +513,15 @@ static void mx51_babbage_cspi_chipselect_inactive(int cspi_mode, int status,
 static struct mxc_spi_master mxcspi1_data = {
 	.maxchipselect = 4,
 	.spi_version = 23,
-	.chipselect_active = mx51_babbage_gpio_ecspi_chipselect_active,
-	.chipselect_inactive = mx51_babbage_gpio_ecspi_chipselect_inactive,
+	.chipselect_active = mx51_ravion_gpio_ecspi_chipselect_active,
+	.chipselect_inactive = mx51_ravion_gpio_ecspi_chipselect_inactive,
 };
 
 static struct mxc_spi_master mxcspi3_data = {
 	.maxchipselect = 4,
 	.spi_version = 7,
-	.chipselect_active = mx51_babbage_cspi_chipselect_active,
-	.chipselect_inactive = mx51_babbage_cspi_chipselect_inactive,
+	.chipselect_active = mx51_ravion_cspi_chipselect_active,
+	.chipselect_inactive = mx51_ravion_cspi_chipselect_inactive,
 };
 
 static struct imxi2c_platform_data mxci2c_data = {
@@ -548,6 +558,11 @@ static struct mxc_dvfs_platform_data dvfs_core_data = {
 	.upcnt_val = 10,
 	.dncnt_val = 10,
 	.delay_time = 30,
+};
+
+static struct mxc_bus_freq_platform_data bus_freq_data = {
+	.gp_reg_id = "SW1",
+        .lp_reg_id = "SW2",
 };
 
 static struct mxc_dvfsper_data dvfs_per_data = {
@@ -666,6 +681,39 @@ static struct mxc_fb_platform_data fb_data[] = {
 	 .mode = video_modes,
 	 .num_modes = ARRAY_SIZE(video_modes),
 	 },
+};
+
+static void mxc_iim_enable_fuse(void)
+{
+	u32 reg;
+
+	if (!ccm_base)
+                return;
+
+        /* Enable fuse blown */
+        reg = readl(ccm_base + 0x64);
+        reg |= 0x10;
+        writel(reg, ccm_base + 0x64);
+}
+
+static void mxc_iim_disable_fuse(void)
+{
+        u32 reg;
+
+	/* Disable fuse blown */
+        if (!ccm_base)
+        	return;
+
+        reg = readl(ccm_base + 0x64);
+        reg &= ~0x10;
+        writel(reg, ccm_base + 0x64);
+}
+
+static struct mxc_iim_data iim_data = {
+        .bank_start = MXC_IIM_MX51_BANK_START_ADDR,
+        .bank_end   = MXC_IIM_MX51_BANK_END_ADDR,
+        .enable_fuse = mxc_iim_enable_fuse,
+        .disable_fuse = mxc_iim_disable_fuse,
 };
 
 extern int primary_di;
@@ -1061,13 +1109,14 @@ static void __init fixup_mxc_board(struct machine_desc *desc, struct tag *tags,
 
 	mxc_set_cpu_type(MXC_CPU_MX51);
 
-	get_cpu_wp = mx51_babbage_get_cpu_wp;
-	set_num_cpu_wp = mx51_babbage_set_num_cpu_wp;
-
+	get_cpu_wp = mx51_ravion_get_cpu_wp;
+	set_num_cpu_wp = mx51_ravion_set_num_cpu_wp;
+	get_dvfs_core_wp = mx51_ravion_get_dvfs_core_table;
+        num_cpu_wp = ARRAY_SIZE(cpu_wp_auto);
+               
 	for_each_tag(mem_tag, tags) {
 		if (mem_tag->hdr.tag == ATAG_MEM) {
 			total_mem = mem_tag->u.mem.size;
-			left_mem = total_mem - gpu_mem - fb_mem;
 			break;
 		}
 	}
@@ -1079,9 +1128,12 @@ static void __init fixup_mxc_board(struct machine_desc *desc, struct tag *tags,
 			if (str != NULL) {
 				str += 4;
 				left_mem = memparse(str, &str);
-				if (left_mem == 0 || left_mem > total_mem)
-					left_mem = total_mem - gpu_mem - fb_mem;
 			}
+
+                        str = t->u.cmdline.cmdline;
+                        str = strstr(str, "gpu_nommu");
+                        if (str != NULL)
+	                        gpu_data.enable_mmu = 0;
 
 			str = t->u.cmdline.cmdline;
 			str = strstr(str, "gpu_memory=");
@@ -1094,6 +1146,12 @@ static void __init fixup_mxc_board(struct machine_desc *desc, struct tag *tags,
 		}
 	}
 
+        if (gpu_data.enable_mmu)
+                gpu_mem = 0;
+
+        if (left_mem == 0 || left_mem > total_mem)
+                left_mem = total_mem - gpu_mem - fb_mem;
+
 	if (mem_tag) {
 		fb_mem = total_mem - left_mem - gpu_mem;
 		if (fb_mem < 0) {
@@ -1103,15 +1161,19 @@ static void __init fixup_mxc_board(struct machine_desc *desc, struct tag *tags,
 		mem_tag->u.mem.size = left_mem;
 
 		/*reserve memory for gpu*/
-		gpu_device.resource[5].start =
-				mem_tag->u.mem.start + left_mem;
-		gpu_device.resource[5].end =
-				gpu_device.resource[5].start + gpu_mem - 1;
+                if (!gpu_data.enable_mmu) {
+                        gpu_device.resource[5].start =
+                                mem_tag->u.mem.start + left_mem;
+                        gpu_device.resource[5].end =
+                                gpu_device.resource[5].start + gpu_mem - 1;
+                }
 #if defined(CONFIG_FB_MXC_SYNC_PANEL) || \
 	defined(CONFIG_FB_MXC_SYNC_PANEL_MODULE)
 		if (fb_mem) {
 			mxcfb_resources[0].start =
-				gpu_device.resource[5].end + 1;
+                                gpu_data.enable_mmu ?
+                                mem_tag->u.mem.start + left_mem :
+                                gpu_device.resource[5].end + 1;
 			mxcfb_resources[0].end =
 				mxcfb_resources[0].start + fb_mem - 1;
 		} else {
@@ -1189,7 +1251,7 @@ static inline void babbage_init_keyboard_gpio( void ) {
 	mxc_register_device(&babbage_button_device, &babbage_button_data);
 };
 
-static void __init mx51_babbage_io_init(void)
+static void __init mx51_ravion_io_init(void)
 {
 	mxc_iomux_v3_setup_multiple_pads(mx51babbage_pads,
 					ARRAY_SIZE(mx51babbage_pads));
@@ -1412,7 +1474,7 @@ static void __init mxc_board_init(void)
 	mxcsdhc1_device.resource[2].end = gpio_to_irq(BABBAGE_SD1_CD);
 
 	mxc_cpu_common_init();
-	mx51_babbage_io_init();
+	mx51_ravion_io_init();
 
 	// NJM: Special I/O init for Avionika UTSVU board
 	mx51_utsvu_io_init();
@@ -1447,15 +1509,17 @@ static void __init mxc_board_init(void)
 	mxc_register_device(&mxc_w1_master_device, &mxc_w1_data);
 	mxc_register_device(&mxc_ipu_device, &mxc_ipu_data);
 	mxc_register_device(&mxc_tve_device, &tve_data);
-	mxc_register_device(&mxcvpu_device, &mxc_vpu_data);
-	mxc_register_device(&gpu_device, NULL);
+	if (!mxc_fuse_get_vpu_status())
+		mxc_register_device(&mxcvpu_device, &mxc_vpu_data);
+	if (!mxc_fuse_get_gpu_status())
+		mxc_register_device(&gpu_device, &gpu_data);
 	mxc_register_device(&mxcscc_device, NULL);
 	mxc_register_device(&mx51_lpmode_device, NULL);
-	mxc_register_device(&busfreq_device, NULL);
+	mxc_register_device(&busfreq_device, &bus_freq_data);
 	mxc_register_device(&sdram_autogating_device, NULL);
 	mxc_register_device(&mxc_dvfs_core_device, &dvfs_core_data);
 	mxc_register_device(&mxc_dvfs_per_device, &dvfs_per_data);
-	mxc_register_device(&mxc_iim_device, NULL);
+	mxc_register_device(&mxc_iim_device, &iim_data);
 	mxc_register_device(&mxc_pwm1_device, NULL);
 	mxc_register_device(&mxc_pwm1_backlight_device,
 		&mxc_pwm_backlight_data);
@@ -1526,7 +1590,7 @@ static void __init mxc_board_init(void)
 	mx5_usbh1_init();
 }
 
-static void __init mx51_babbage_timer_init(void)
+static void __init mx51_ravion_timer_init(void)
 {
 	struct clk *uart_clk;
 
@@ -1544,7 +1608,7 @@ static void __init mx51_babbage_timer_init(void)
 }
 
 static struct sys_timer mxc_timer = {
-	.init	= mx51_babbage_timer_init,
+	.init	= mx51_ravion_timer_init,
 };
 
 /*
