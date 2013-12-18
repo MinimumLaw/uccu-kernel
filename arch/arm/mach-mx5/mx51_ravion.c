@@ -57,51 +57,51 @@
 #include "usb.h"
 
 /*!
- * @file mach-mx51/mx51_babbage.c
+ * @file mach-mx51/mx51_ravion.c
  *
  * @brief This file contains the board specific initialization routines.
  *
  * @ingroup MSL_MX51
  */
 
-#define BABBAGE_SD1_CD			(0*32 + 0)	/* GPIO_1_0 */
-#define BABBAGE_SW12V_EN		(0*32 + 1)	/* GPIO_1_1 */
-#define BABBAGE_WDOG_B			(0*32 + 4)	/* GPIO_1_4 */
-#define BABBAGE_SD2_WP			(0*32 + 5)	/* GPIO_1_5 */
-#define BABBAGE_SD2_CD			(0*32 + 6)	/* GPIO_1_6 */
-#define BABBAGE_USBH1_HUB_RST_B		(0*32 + 7)	/* GPIO_1_7 */
-#define BABBAGE_PMIC_INT		(0*32 + 8)	/* GPIO_1_8 */
+#define RAVION_SD1_CD			(0*32 + 0)	/* GPIO_1_0 */
+#define RAVION_SW12V_EN		(0*32 + 1)	/* GPIO_1_1 */
+#define RAVION_WDOG_B			(0*32 + 4)	/* GPIO_1_4 */
+#define RAVION_SD2_WP			(0*32 + 5)	/* GPIO_1_5 */
+#define RAVION_SD2_CD			(0*32 + 6)	/* GPIO_1_6 */
+#define RAVION_USBH1_HUB_RST_B		(0*32 + 7)	/* GPIO_1_7 */
+#define RAVION_PMIC_INT		(0*32 + 8)	/* GPIO_1_8 */
 
-#define BABBAGE_GPO_3			(1*32 + 1)	/* GPIO_2_1 */
-#define BABBAGE_GPI_0			(1*32 + 2)	/* GPIO_2_2 */
-#define BABBAGE_GPI_1			(1*32 + 4)	/* GPIO_2_4 */
-#define BABBAGE_USB_PHY_RESET_B		(1*32 + 5)	/* GPIO_2_5 */
-#define BABBAGE_GPI_2			(1*32 + 6)	/* GPIO_2_6 */
-#define BABBAGE_GPI_3			(1*32 + 7)	/* GPIO_2_7 */
-#define BABBAGE_GPO_0			(1*32 + 12)	/* GPIO_2_12 */
-#define BABBAGE_GPO_1			(1*32 + 13)	/* GPIO_2_13 */
-#define BABBAGE_FEC_PHY_RESET_B		(1*32 + 14)	/* GPIO_2_14 */
-#define BABBAGE_BT_ENABLE		(1*32 + 15)	/* GPIO_2_15 */
-#define BABBAGE_WL_ENABLE		(1*32 + 16)	/* GPIO_2_16 */
-#define BABBAGE_GPO_2			(1*32 + 17)	/* GPIO_2_17 */
-#define BABBAGE_CAN_RESET_B		(1*32 + 18)	/* GPIO_2_18 */
-#define BABBAGE_WIRELESS_IRQ		(1*32 + 19)	/* GPIO_2_19 */
-#define BABBAGE_CAN_IRQ			(1*32 + 20)	/* GPIO_2_20 */
-#define BABBAGE_POWER_KEY		(1*32 + 21)	/* GPIO_2_21 */
-#define BABBAGE_EIM_RESET		(1*32 + 26)	/* GPIO_2_26 */
-#define BABBAGE_EIM_IRQ			(1*32 + 31)	/* GPIO_2_31 */
+#define RAVION_GPO_3			(1*32 + 1)	/* GPIO_2_1 */
+#define RAVION_GPI_0			(1*32 + 2)	/* GPIO_2_2 */
+#define RAVION_GPI_1			(1*32 + 4)	/* GPIO_2_4 */
+#define RAVION_USB_PHY_RESET_B		(1*32 + 5)	/* GPIO_2_5 */
+#define RAVION_GPI_2			(1*32 + 6)	/* GPIO_2_6 */
+#define RAVION_GPI_3			(1*32 + 7)	/* GPIO_2_7 */
+#define RAVION_GPO_0			(1*32 + 12)	/* GPIO_2_12 */
+#define RAVION_GPO_1			(1*32 + 13)	/* GPIO_2_13 */
+#define RAVION_FEC_PHY_RESET_B		(1*32 + 14)	/* GPIO_2_14 */
+#define RAVION_BT_ENABLE		(1*32 + 15)	/* GPIO_2_15 */
+#define RAVION_WL_ENABLE		(1*32 + 16)	/* GPIO_2_16 */
+#define RAVION_GPO_2			(1*32 + 17)	/* GPIO_2_17 */
+#define RAVION_CAN_RESET_B		(1*32 + 18)	/* GPIO_2_18 */
+#define RAVION_WIRELESS_IRQ		(1*32 + 19)	/* GPIO_2_19 */
+#define RAVION_CAN_IRQ			(1*32 + 20)	/* GPIO_2_20 */
+#define RAVION_POWER_KEY		(1*32 + 21)	/* GPIO_2_21 */
+#define RAVION_EIM_RESET		(1*32 + 26)	/* GPIO_2_26 */
+#define RAVION_EIM_IRQ			(1*32 + 31)	/* GPIO_2_31 */
 
-#define BABBAGE_26M_OSC_EN		(2*32 + 1)	/* GPIO_3_1 */
-#define BABBAGE_LVDS_POWER_DOWN_B	(2*32 + 3)	/* GPIO_3_3 */
-#define BABBAGE_VDAC_POWER_DOWN_B	(2*32 + 8)	/* GPIO_3_8 */
-#define BABBAGE_HEADPHONE_DET		(2*32 + 26)	/* GPIO_3_26 */
+#define RAVION_26M_OSC_EN		(2*32 + 1)	/* GPIO_3_1 */
+#define RAVION_LVDS_POWER_DOWN_B	(2*32 + 3)	/* GPIO_3_3 */
+#define RAVION_VDAC_POWER_DOWN_B	(2*32 + 8)	/* GPIO_3_8 */
+#define RAVION_HEADPHONE_DET		(2*32 + 26)	/* GPIO_3_26 */
 
-#define BABBAGE_VADC_RESET_B		(3*32 + 11)	/* GPIO_4_11 */
-#define BABBAGE_VADC_POWER_DOWN_B	(3*32 + 12)	/* GPIO_4_12 */
-#define BABBAGE_USB_CLK_EN_B		(3*32 + 13)	/* GPIO_4_13 */
-#define BABBAGE_3V3_ON			(3*32 + 15)	/* GPIO_4_15 */
-#define BABBAGE_CSPI1_SS0_GPIO		(3*32 + 24)	/* GPIO_4_24 */
-#define BABBAGE_AUDIO_CLK_EN_B		(3*32 + 26)	/* GPIO_4_26 */
+#define RAVION_VADC_RESET_B		(3*32 + 11)	/* GPIO_4_11 */
+#define RAVION_VADC_POWER_DOWN_B	(3*32 + 12)	/* GPIO_4_12 */
+#define RAVION_USB_CLK_EN_B		(3*32 + 13)	/* GPIO_4_13 */
+#define RAVION_3V3_ON			(3*32 + 15)	/* GPIO_4_15 */
+#define RAVION_CSPI1_SS0_GPIO		(3*32 + 24)	/* GPIO_4_24 */
+#define RAVION_AUDIO_CLK_EN_B		(3*32 + 26)	/* GPIO_4_26 */
 
 extern int __init mx51_babbage_init_mc13892(void);
 extern struct cpu_wp *(*get_cpu_wp)(int *wp);
@@ -115,7 +115,7 @@ static int num_cpu_wp;
  */
 #define WITH_SION	(((iomux_v3_cfg_t)IOMUX_CONFIG_SION) << MUX_MODE_SHIFT)
 
-static iomux_v3_cfg_t mx51babbage_pads[] = {
+static iomux_v3_cfg_t mx51ravion_pads[] = {
 	/* UART1 */
 	MX51_PAD_UART1_RXD__UART1_RXD,
 	MX51_PAD_UART1_TXD__UART1_TXD,
@@ -459,9 +459,9 @@ static void mx51_ravion_gpio_ecspi_chipselect_active(int cspi_mode, int status,
 		case 0x3:
 			{
 			mxc_iomux_v3_setup_pad(MX51_PAD_CSPI1_SS0__GPIO4_24);
-			gpio_request(BABBAGE_CSPI1_SS0_GPIO, "cspi1-gpio");
-			gpio_direction_output(BABBAGE_CSPI1_SS0_GPIO, 0);
-			//gpio_set_value(BABBAGE_CSPI1_SS0_GPIO, 1 & (~status));
+			gpio_request(RAVION_CSPI1_SS0_GPIO, "cspi1-gpio");
+			gpio_direction_output(RAVION_CSPI1_SS0_GPIO, 0);
+			//gpio_set_value(RAVION_CSPI1_SS0_GPIO, 1 & (~status));
 			break;
 			}
 		default:
@@ -487,7 +487,7 @@ static void mx51_ravion_gpio_ecspi_chipselect_inactive(int cspi_mode, int status
 			break;
 		case 0x2:
 		case 0x3:
-			gpio_free(BABBAGE_CSPI1_SS0_GPIO);
+			gpio_free(RAVION_CSPI1_SS0_GPIO);
 			break;
 
 		default:
@@ -853,9 +853,9 @@ static int mxc_mcp251x_setup(struct spi_device* sdev)
 static int mxc_mcp251x_power_enable(int enable)
 {
 	if(enable)
-		gpio_set_value(BABBAGE_CAN_RESET_B, 1);
+		gpio_set_value(RAVION_CAN_RESET_B, 1);
 	else
-		gpio_set_value(BABBAGE_CAN_RESET_B, 0);
+		gpio_set_value(RAVION_CAN_RESET_B, 0);
 	return 0;
 }
 
@@ -886,9 +886,9 @@ static struct mxc_lightsensor_platform_data ls_data = {
 static void adv7180_pwdn(int pwdn)
 {
 	if(pwdn)
-		gpio_direction_output(BABBAGE_VADC_POWER_DOWN_B, 0);
+		gpio_direction_output(RAVION_VADC_POWER_DOWN_B, 0);
 	else
-		gpio_direction_output(BABBAGE_VADC_POWER_DOWN_B, 1);
+		gpio_direction_output(RAVION_VADC_POWER_DOWN_B, 1);
 		
 }
 static struct mxc_tvin_platform_data adv7180_data = {
@@ -985,7 +985,7 @@ static struct spi_board_info mxc_mcp2515x_device[] __initdata = {
 	 .mode = SPI_MODE_0,
 	 .bus_num = 1,
 	 .chip_select = 2,
-	 .irq = gpio_to_irq(BABBAGE_CAN_IRQ), 
+	 .irq = gpio_to_irq(RAVION_CAN_IRQ), 
 	 .platform_data = &mxc_mcp251x_pdata,
 	},
 };
@@ -1012,13 +1012,13 @@ static unsigned int sdhc_get_card_det_status(struct device *dev)
 
 	/* read the det pin for SDHC1/2 */
 	if (to_platform_device(dev)->id == 0)
-		ret = gpio_get_value(BABBAGE_SD1_CD);
+		ret = gpio_get_value(RAVION_SD1_CD);
 	else
 	{
 		/* TiWi card inserted, if WP==1 && CD==0 for UTSVU board */
 
-		if(gpio_get_value(BABBAGE_SD2_WP))
-			ret = gpio_get_value(BABBAGE_SD2_CD);
+		if(gpio_get_value(RAVION_SD2_WP))
+			ret = gpio_get_value(RAVION_SD2_CD);
 		else
 			ret = 1;
 	}
@@ -1057,20 +1057,20 @@ static int mxc_sgtl5000_amp_enable(int enable)
 
 static int mxc_sgtl5000_clock_enable(int enable)
 {
-	gpio_set_value(BABBAGE_AUDIO_CLK_EN_B, !enable);
+	gpio_set_value(RAVION_AUDIO_CLK_EN_B, !enable);
 	return 0;
 }
 
 static int headphone_det_status(void)
 {
-	return (gpio_get_value(BABBAGE_HEADPHONE_DET) == 0);
+	return (gpio_get_value(RAVION_HEADPHONE_DET) == 0);
 }
 
 static struct mxc_audio_platform_data sgtl5000_data = {
 	.ssi_num = 1,
 	.src_port = 2,
 	.ext_port = 3,
-	.hp_irq = gpio_to_irq(BABBAGE_HEADPHONE_DET),
+	.hp_irq = gpio_to_irq(RAVION_HEADPHONE_DET),
 	.hp_status = headphone_det_status,
 	.amp_enable = mxc_sgtl5000_amp_enable,
 	.clock_enable = mxc_sgtl5000_clock_enable,
@@ -1227,9 +1227,9 @@ static void mxc_power_off(void)
 		(PWGT1SPIEN|PWGT2SPIEN));
 }
 
-static struct gpio_keys_button babbage_buttons[] = {
+static struct gpio_keys_button ravion_buttons[] = {
 	{
-	 .gpio = BABBAGE_POWER_KEY,
+	 .gpio = RAVION_POWER_KEY,
 	 .code = KEY_POWER,
 	 .desc = "PWR",
 	 .active_low = 1,
@@ -1238,142 +1238,142 @@ static struct gpio_keys_button babbage_buttons[] = {
 	},
 };
 
-static struct gpio_keys_platform_data babbage_button_data = {
-	.buttons = babbage_buttons,
+static struct gpio_keys_platform_data ravion_button_data = {
+	.buttons = ravion_buttons,
 	.nbuttons = 1,
 };
 
-static struct platform_device babbage_button_device = {
+static struct platform_device ravion_button_device = {
 	.name = "gpio-keys",
 	.id = -1,
 	.num_resources = 0,
 	.dev = {
-		.platform_data = &babbage_button_data,
+		.platform_data = &ravion_button_data,
 	},
 };
 
-static inline void babbage_init_keyboard_gpio( void ) {
-	mxc_register_device(&babbage_button_device, &babbage_button_data);
+static inline void ravion_init_keyboard_gpio( void ) {
+	mxc_register_device(&ravion_button_device, &ravion_button_data);
 };
 
 static void __init mx51_ravion_io_init(void)
 {
-	mxc_iomux_v3_setup_multiple_pads(mx51babbage_pads,
-					ARRAY_SIZE(mx51babbage_pads));
+	mxc_iomux_v3_setup_multiple_pads(mx51ravion_pads,
+					ARRAY_SIZE(mx51ravion_pads));
 
-	gpio_request(BABBAGE_PMIC_INT, "pmic-int");
-	gpio_request(BABBAGE_SD1_CD, "sd1-cd");
+	gpio_request(RAVION_PMIC_INT, "pmic-int");
+	gpio_request(RAVION_SD1_CD, "sd1-cd");
 
-	gpio_direction_input(BABBAGE_PMIC_INT);
-	gpio_direction_input(BABBAGE_SD1_CD);
+	gpio_direction_input(RAVION_PMIC_INT);
+	gpio_direction_input(RAVION_SD1_CD);
 
 	/* SD2 CD for BB2.5 */
-	gpio_request(BABBAGE_SD2_CD, "sd2-cd");
-	gpio_direction_input(BABBAGE_SD2_CD);
+	gpio_request(RAVION_SD2_CD, "sd2-cd");
+	gpio_direction_input(RAVION_SD2_CD);
 
-	gpio_request(BABBAGE_SD2_WP, "sd2-wp");
-	gpio_direction_input(BABBAGE_SD2_WP);
+	gpio_request(RAVION_SD2_WP, "sd2-wp");
+	gpio_direction_input(RAVION_SD2_WP);
 
 	/* reset usbh1 hub */
-	gpio_request(BABBAGE_USBH1_HUB_RST_B, "usb-hub-rst_n");
-	gpio_direction_output(BABBAGE_USBH1_HUB_RST_B, 0);
-	gpio_set_value(BABBAGE_USBH1_HUB_RST_B, 0);
+	gpio_request(RAVION_USBH1_HUB_RST_B, "usb-hub-rst_n");
+	gpio_direction_output(RAVION_USBH1_HUB_RST_B, 0);
+	gpio_set_value(RAVION_USBH1_HUB_RST_B, 0);
 	msleep(1);
-	gpio_set_value(BABBAGE_USBH1_HUB_RST_B, 1);
+	gpio_set_value(RAVION_USBH1_HUB_RST_B, 1);
 
 	/* reset FEC PHY */
-	gpio_request(BABBAGE_FEC_PHY_RESET_B, "fec-phy-reset_n");
-	gpio_direction_output(BABBAGE_FEC_PHY_RESET_B, 0);
+	gpio_request(RAVION_FEC_PHY_RESET_B, "fec-phy-reset_n");
+	gpio_direction_output(RAVION_FEC_PHY_RESET_B, 0);
 	msleep(1);
-	gpio_set_value(BABBAGE_FEC_PHY_RESET_B, 1);
+	gpio_set_value(RAVION_FEC_PHY_RESET_B, 1);
 
 	/* Drive 26M_OSC_EN line high */
-	gpio_request(BABBAGE_26M_OSC_EN, "26m-osc-en");
-	gpio_direction_output(BABBAGE_26M_OSC_EN, 1);
+	gpio_request(RAVION_26M_OSC_EN, "26m-osc-en");
+	gpio_direction_output(RAVION_26M_OSC_EN, 1);
 
 	/* reset USB PHY */
-	gpio_request(BABBAGE_USB_PHY_RESET_B, "usb-phy-reset_n");
-	gpio_direction_output(BABBAGE_USB_PHY_RESET_B, 0);
+	gpio_request(RAVION_USB_PHY_RESET_B, "usb-phy-reset_n");
+	gpio_direction_output(RAVION_USB_PHY_RESET_B, 0);
 	msleep(1);
-	gpio_direction_output(BABBAGE_USB_PHY_RESET_B, 1);
+	gpio_direction_output(RAVION_USB_PHY_RESET_B, 1);
 
 	/* hphone_det_b */
-	gpio_request(BABBAGE_HEADPHONE_DET, "hphone-det");
-	gpio_direction_input(BABBAGE_HEADPHONE_DET);
+	gpio_request(RAVION_HEADPHONE_DET, "hphone-det");
+	gpio_direction_input(RAVION_HEADPHONE_DET);
 
 	/* audio_clk_en_b */
-	gpio_request(BABBAGE_AUDIO_CLK_EN_B, "audio-clk-en_n");
-	gpio_direction_output(BABBAGE_AUDIO_CLK_EN_B, 0);
+	gpio_request(RAVION_AUDIO_CLK_EN_B, "audio-clk-en_n");
+	gpio_direction_output(RAVION_AUDIO_CLK_EN_B, 0);
 
 	/* usb_clk_en_b */
-	gpio_request(BABBAGE_USB_CLK_EN_B, "usb-clk-en_n");
-	gpio_direction_output(BABBAGE_USB_CLK_EN_B, 0);
+	gpio_request(RAVION_USB_CLK_EN_B, "usb-clk-en_n");
+	gpio_direction_output(RAVION_USB_CLK_EN_B, 0);
 
-	babbage_init_keyboard_gpio();
+	ravion_init_keyboard_gpio();
 
 	/* VGA power down */
-	gpio_request(BABBAGE_VDAC_POWER_DOWN_B, "vdac-power-down_n");
-	gpio_direction_output(BABBAGE_VDAC_POWER_DOWN_B, 1);
+	gpio_request(RAVION_VDAC_POWER_DOWN_B, "vdac-power-down_n");
+	gpio_direction_output(RAVION_VDAC_POWER_DOWN_B, 1);
 
 	/* LVDS power down */
-	gpio_request(BABBAGE_LVDS_POWER_DOWN_B, "lvds-power-down_n");
-	gpio_direction_output(BABBAGE_LVDS_POWER_DOWN_B, 1);
+	gpio_request(RAVION_LVDS_POWER_DOWN_B, "lvds-power-down_n");
+	gpio_direction_output(RAVION_LVDS_POWER_DOWN_B, 1);
 
 	/* Video ADC reset and power down */
-	gpio_request(BABBAGE_VADC_POWER_DOWN_B, "vadc-power-down_n");
-	gpio_request(BABBAGE_VADC_RESET_B, "vadc-reset_n");
-	gpio_direction_output(BABBAGE_VADC_RESET_B, 0);
-	gpio_set_value(BABBAGE_VADC_RESET_B, 0);
+	gpio_request(RAVION_VADC_POWER_DOWN_B, "vadc-power-down_n");
+	gpio_request(RAVION_VADC_RESET_B, "vadc-reset_n");
+	gpio_direction_output(RAVION_VADC_RESET_B, 0);
+	gpio_set_value(RAVION_VADC_RESET_B, 0);
 	msleep(1);
-	gpio_set_value(BABBAGE_VADC_RESET_B, 1);
-	gpio_direction_output(BABBAGE_VADC_POWER_DOWN_B, 0);
+	gpio_set_value(RAVION_VADC_RESET_B, 1);
+	gpio_direction_output(RAVION_VADC_POWER_DOWN_B, 0);
 
 	/* EIM IRQ */
-	gpio_request(BABBAGE_EIM_IRQ, "eim-irq");
-	gpio_direction_input(BABBAGE_EIM_IRQ);
+	gpio_request(RAVION_EIM_IRQ, "eim-irq");
+	gpio_direction_input(RAVION_EIM_IRQ);
 
 	/* EIM Reset */
-	gpio_request(BABBAGE_EIM_RESET, "eim-reset");
-	gpio_direction_output(BABBAGE_EIM_RESET, 1);
-	gpio_set_value(BABBAGE_EIM_RESET, 1);
+	gpio_request(RAVION_EIM_RESET, "eim-reset");
+	gpio_direction_output(RAVION_EIM_RESET, 1);
+	gpio_set_value(RAVION_EIM_RESET, 1);
 	msleep(1);
-	gpio_set_value(BABBAGE_EIM_RESET, 0);
+	gpio_set_value(RAVION_EIM_RESET, 0);
 
 	/* Bluetooth enable */
-	gpio_request(BABBAGE_BT_ENABLE, "bt-en");
-	gpio_direction_output(BABBAGE_BT_ENABLE, 1);
+	gpio_request(RAVION_BT_ENABLE, "bt-en");
+	gpio_direction_output(RAVION_BT_ENABLE, 1);
 
 	/* GPI_0 */
-	gpio_request(BABBAGE_GPI_0, "gpi-0");
-	gpio_direction_input(BABBAGE_GPI_0);
+	gpio_request(RAVION_GPI_0, "gpi-0");
+	gpio_direction_input(RAVION_GPI_0);
 
 	/* GPI_1 */
-	gpio_request(BABBAGE_GPI_1, "gpi-1");
-	gpio_direction_input(BABBAGE_GPI_1);
+	gpio_request(RAVION_GPI_1, "gpi-1");
+	gpio_direction_input(RAVION_GPI_1);
 
 	/* GPI_2 */
-	gpio_request(BABBAGE_GPI_2, "gpi-2");
-	gpio_direction_input(BABBAGE_GPI_2);
+	gpio_request(RAVION_GPI_2, "gpi-2");
+	gpio_direction_input(RAVION_GPI_2);
 
 	/* GPI_3 */
-	gpio_request(BABBAGE_GPI_3, "gpi-3");
-	gpio_direction_input(BABBAGE_GPI_3);
+	gpio_request(RAVION_GPI_3, "gpi-3");
+	gpio_direction_input(RAVION_GPI_3);
 
 	/* GPO_0 */
-	gpio_request(BABBAGE_GPO_0, "gpo-0");
-	gpio_direction_output(BABBAGE_GPO_0, 0);
+	gpio_request(RAVION_GPO_0, "gpo-0");
+	gpio_direction_output(RAVION_GPO_0, 0);
 
 	/* GPO_1 */
-	gpio_request(BABBAGE_GPO_1, "gpo-1");
-	gpio_direction_output(BABBAGE_GPO_1, 0);
+	gpio_request(RAVION_GPO_1, "gpo-1");
+	gpio_direction_output(RAVION_GPO_1, 0);
 
 	/* GPO_2 */
-	gpio_request(BABBAGE_GPO_2, "gpo-2");
-	gpio_direction_output(BABBAGE_GPO_2, 0);
+	gpio_request(RAVION_GPO_2, "gpo-2");
+	gpio_direction_output(RAVION_GPO_2, 0);
 
 	/* GPO_3 */
-	gpio_request(BABBAGE_GPO_3, "gpo-3");
-	gpio_direction_output(BABBAGE_GPO_3, 0);
+	gpio_request(RAVION_GPO_3, "gpo-3");
+	gpio_direction_output(RAVION_GPO_3, 0);
 
 	if (enable_w1) {
 		/* OneWire */
@@ -1387,10 +1387,10 @@ static void __init mx51_ravion_io_init(void)
 
 static void __init mx51_utsvu_mcp251x_init(void)
 {
-	if( (gpio_request(BABBAGE_CAN_IRQ, "MCP 251x CAN INT") == 0) && (gpio_direction_input(BABBAGE_CAN_IRQ) == 0) )
+	if( (gpio_request(RAVION_CAN_IRQ, "MCP 251x CAN INT") == 0) && (gpio_direction_input(RAVION_CAN_IRQ) == 0) )
 	{
-		gpio_export(BABBAGE_CAN_IRQ, 0);
-		set_irq_type(gpio_to_irq(BABBAGE_CAN_IRQ), IRQ_TYPE_EDGE_FALLING);
+		gpio_export(RAVION_CAN_IRQ, 0);
+		set_irq_type(gpio_to_irq(RAVION_CAN_IRQ), IRQ_TYPE_EDGE_FALLING);
 	}
 	else
 	{
@@ -1401,13 +1401,13 @@ static void __init mx51_utsvu_mcp251x_init(void)
 static void __init mx51_utsvu_wireless_for_tiwi_init(void)
 {
 	/* Wireless enable */
-	gpio_request(BABBAGE_WL_ENABLE, "wl-en");
-	gpio_direction_output(BABBAGE_WL_ENABLE, 1);
+	gpio_request(RAVION_WL_ENABLE, "wl-en");
+	gpio_direction_output(RAVION_WL_ENABLE, 1);
 
-	if( (gpio_request(BABBAGE_WIRELESS_IRQ, "WIRELESS INT") == 0) && (gpio_direction_input(BABBAGE_WIRELESS_IRQ) == 0) )
+	if( (gpio_request(RAVION_WIRELESS_IRQ, "WIRELESS INT") == 0) && (gpio_direction_input(RAVION_WIRELESS_IRQ) == 0) )
 	{
-		gpio_export(BABBAGE_WIRELESS_IRQ, 0);
-		set_irq_type(gpio_to_irq(BABBAGE_WIRELESS_IRQ), IRQ_TYPE_EDGE_RISING);
+		gpio_export(RAVION_WIRELESS_IRQ, 0);
+		set_irq_type(gpio_to_irq(RAVION_WIRELESS_IRQ), IRQ_TYPE_EDGE_RISING);
 	}
 	else
 	{
@@ -1438,23 +1438,23 @@ static void __init mx51_utsvu_io_init(void)
 					ARRAY_SIZE(mx51_utsvu_pads));
 
 	/* GPIO 1_4 as POWER OFF pin */
-	gpio_request(BABBAGE_WDOG_B, "power-off");
-	gpio_direction_output(BABBAGE_WDOG_B, 1);
+	gpio_request(RAVION_WDOG_B, "power-off");
+	gpio_direction_output(RAVION_WDOG_B, 1);
 
 	/* GPIO 4_15 (power on 3.3 V) */
-	gpio_request(BABBAGE_3V3_ON, "3v3-on");
-	gpio_direction_output(BABBAGE_3V3_ON, 1);
+	gpio_request(RAVION_3V3_ON, "3v3-on");
+	gpio_direction_output(RAVION_3V3_ON, 1);
 
 	/* Switch 12 V */
-	gpio_request(BABBAGE_SW12V_EN, "sw12v-en");
-	gpio_direction_output(BABBAGE_SW12V_EN, 0);
+	gpio_request(RAVION_SW12V_EN, "sw12v-en");
+	gpio_direction_output(RAVION_SW12V_EN, 0);
 
 	/* CAN Reset */
-	gpio_request(BABBAGE_CAN_RESET_B, "can-rst_n");
-	gpio_direction_output(BABBAGE_CAN_RESET_B, 0);
-	gpio_set_value(BABBAGE_CAN_RESET_B, 0);
+	gpio_request(RAVION_CAN_RESET_B, "can-rst_n");
+	gpio_direction_output(RAVION_CAN_RESET_B, 0);
+	gpio_set_value(RAVION_CAN_RESET_B, 0);
 	msleep(5);
-	gpio_set_value(BABBAGE_CAN_RESET_B, 1);
+	gpio_set_value(RAVION_CAN_RESET_B, 1);
 }
 
 /*!
@@ -1473,10 +1473,10 @@ static void __init mxc_board_init(void)
 	mxc_spdif_data.spdif_core_clk = clk_get(NULL, "spdif_xtal_clk");
 	clk_put(mxc_spdif_data.spdif_core_clk);
 	/* SD card detect irqs */
-	mxcsdhc2_device.resource[2].start = gpio_to_irq(BABBAGE_SD2_CD);
-	mxcsdhc2_device.resource[2].end = gpio_to_irq(BABBAGE_SD2_CD);
-	mxcsdhc1_device.resource[2].start = gpio_to_irq(BABBAGE_SD1_CD);
-	mxcsdhc1_device.resource[2].end = gpio_to_irq(BABBAGE_SD1_CD);
+	mxcsdhc2_device.resource[2].start = gpio_to_irq(RAVION_SD2_CD);
+	mxcsdhc2_device.resource[2].end = gpio_to_irq(RAVION_SD2_CD);
+	mxcsdhc1_device.resource[2].start = gpio_to_irq(RAVION_SD1_CD);
+	mxcsdhc1_device.resource[2].end = gpio_to_irq(RAVION_SD1_CD);
 
 	mxc_cpu_common_init();
 	mx51_ravion_io_init();
@@ -1486,10 +1486,10 @@ static void __init mxc_board_init(void)
 
 	/* DIMAS: detect SD2 card inserted */
 	sd2_device_type = CARD_NONE;
-	if((gpio_get_value(BABBAGE_SD2_CD) == 0) && (gpio_get_value(BABBAGE_SD2_WP) == 0))
+	if((gpio_get_value(RAVION_SD2_CD) == 0) && (gpio_get_value(RAVION_SD2_WP) == 0))
 		sd2_device_type = CARD_SAGRAD;
 	else
-	if((gpio_get_value(BABBAGE_SD2_CD) == 0) && gpio_get_value(BABBAGE_SD2_WP))
+	if((gpio_get_value(RAVION_SD2_CD) == 0) && gpio_get_value(RAVION_SD2_WP))
 		sd2_device_type = CARD_TIWI;
 
 	switch(sd2_device_type)
