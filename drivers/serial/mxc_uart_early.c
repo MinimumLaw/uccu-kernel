@@ -133,7 +133,7 @@ static int __init mxc_early_uart_setup(struct console *console, char *options)
 	/* Enable Early MXC UART Clock */
 	clk_enable(device->clk);
 
-	port->uartclk = clk_get_rate(device->clk);// FixMe: not work, was 5600000;
+	port->uartclk = clk_get_rate(device->clk);
 	port->iotype = UPIO_MEM;
 	port->membase = ioremap(port->mapbase, SZ_4K);
 
