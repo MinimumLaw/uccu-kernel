@@ -1,5 +1,5 @@
 /*
- * mx51-babbage-pmic-mc13892.c  --  i.MX51 Babbage Driver for Atlas MC13892 PMIC
+ * mx51-ravion-pmic-mc13892.c  --  i.MX51 Ravion Driver for Atlas MC13892 PMIC
  */
  /*
   * Copyright (C) 2009-2011 Freescale Semiconductor, Inc. All Rights Reserved.
@@ -341,7 +341,7 @@ static struct regulator_init_data gpo4_init = {
 static int mc13892_regulator_init(struct mc13892 *mc13892)
 {
 	unsigned int value, register_mask;
-	printk("Initializing regulators for Babbage.\n");
+	printk("Initializing regulators for Ravion.\n");
 	if (mxc_cpu_is_rev(CHIP_REV_2_0) < 0)
 		sw2_init.constraints.state_mem.uV = 1100000;
 	else if (mxc_cpu_is_rev(CHIP_REV_2_0) == 1) {
@@ -431,7 +431,7 @@ static struct spi_board_info __initdata mc13892_spi_device = {
 };
 
 
-int __init mx51_babbage_init_mc13892(void)
+int __init mx51_ravion_init_mc13892(void)
 {
 	return spi_register_board_info(&mc13892_spi_device, 1);
 }

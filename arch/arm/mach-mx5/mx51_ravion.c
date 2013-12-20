@@ -64,46 +64,46 @@
  * @ingroup MSL_MX51
  */
 
-#define RAVION_SD1_CD			(0*32 + 0)	/* GPIO_1_0 */
-#define RAVION_SW12V_EN		(0*32 + 1)	/* GPIO_1_1 */
-#define RAVION_WDOG_B			(0*32 + 4)	/* GPIO_1_4 */
-#define RAVION_SD2_WP			(0*32 + 5)	/* GPIO_1_5 */
-#define RAVION_SD2_CD			(0*32 + 6)	/* GPIO_1_6 */
-#define RAVION_USBH1_HUB_RST_B		(0*32 + 7)	/* GPIO_1_7 */
-#define RAVION_PMIC_INT		(0*32 + 8)	/* GPIO_1_8 */
+#define RAVION_SD1_CD			(0*32 + 0)	/* GPIO1_0 */
+#define RAVION_SW12V_EN			(0*32 + 1)	/* GPIO1_1 */
+#define RAVION_WDOG_B			(0*32 + 4)	/* GPIO1_4 */
+#define RAVION_SD2_WP			(0*32 + 5)	/* GPIO1_5 */
+#define RAVION_SD2_CD			(0*32 + 6)	/* GPIO1_6 */
+#define RAVION_USBH1_HUB_RST_B		(0*32 + 7)	/* GPIO1_7 */
+#define RAVION_PMIC_INT			(0*32 + 8)	/* GPIO1_8 */
 
-#define RAVION_GPO_3			(1*32 + 1)	/* GPIO_2_1 */
-#define RAVION_GPI_0			(1*32 + 2)	/* GPIO_2_2 */
-#define RAVION_GPI_1			(1*32 + 4)	/* GPIO_2_4 */
-#define RAVION_USB_PHY_RESET_B		(1*32 + 5)	/* GPIO_2_5 */
-#define RAVION_GPI_2			(1*32 + 6)	/* GPIO_2_6 */
-#define RAVION_GPI_3			(1*32 + 7)	/* GPIO_2_7 */
-#define RAVION_GPO_0			(1*32 + 12)	/* GPIO_2_12 */
-#define RAVION_GPO_1			(1*32 + 13)	/* GPIO_2_13 */
-#define RAVION_FEC_PHY_RESET_B		(1*32 + 14)	/* GPIO_2_14 */
-#define RAVION_BT_ENABLE		(1*32 + 15)	/* GPIO_2_15 */
-#define RAVION_WL_ENABLE		(1*32 + 16)	/* GPIO_2_16 */
-#define RAVION_GPO_2			(1*32 + 17)	/* GPIO_2_17 */
-#define RAVION_CAN_RESET_B		(1*32 + 18)	/* GPIO_2_18 */
-#define RAVION_WIRELESS_IRQ		(1*32 + 19)	/* GPIO_2_19 */
-#define RAVION_CAN_IRQ			(1*32 + 20)	/* GPIO_2_20 */
-#define RAVION_POWER_KEY		(1*32 + 21)	/* GPIO_2_21 */
-#define RAVION_EIM_RESET		(1*32 + 26)	/* GPIO_2_26 */
-#define RAVION_EIM_IRQ			(1*32 + 31)	/* GPIO_2_31 */
+#define RAVION_GPO_3			(1*32 + 1)	/* GPIO2_1 */
+#define RAVION_GPI_0			(1*32 + 2)	/* GPIO2_2 */
+#define RAVION_GPI_1			(1*32 + 4)	/* GPIO2_4 */
+#define RAVION_USB_PHY_RESET_B		(1*32 + 5)	/* GPIO2_5 */
+#define RAVION_GPI_2			(1*32 + 6)	/* GPIO2_6 */
+#define RAVION_GPI_3			(1*32 + 7)	/* GPIO2_7 */
+#define RAVION_GPO_0			(1*32 + 12)	/* GPIO2_12 */
+#define RAVION_GPO_1			(1*32 + 13)	/* GPIO2_13 */
+#define RAVION_FEC_PHY_RESET_B		(1*32 + 14)	/* GPIO2_14 */
+#define RAVION_BT_ENABLE		(1*32 + 15)	/* GPIO2_15 */
+#define RAVION_WL_ENABLE		(1*32 + 16)	/* GPIO2_16 */
+#define RAVION_GPO_2			(1*32 + 17)	/* GPIO2_17 */
+#define RAVION_CAN_RESET_B		(1*32 + 18)	/* GPIO2_18 */
+#define RAVION_WIRELESS_IRQ		(1*32 + 19)	/* GPIO2_19 */
+#define RAVION_CAN_IRQ			(1*32 + 20)	/* GPIO2_20 */
+#define RAVION_POWER_KEY		(1*32 + 21)	/* GPIO2_21 */
+#define RAVION_EIM_RESET		(1*32 + 26)	/* GPIO2_26 */
+#define RAVION_EIM_IRQ			(1*32 + 31)	/* GPIO2_31 */
 
-#define RAVION_26M_OSC_EN		(2*32 + 1)	/* GPIO_3_1 */
-#define RAVION_LVDS_POWER_DOWN_B	(2*32 + 3)	/* GPIO_3_3 */
-#define RAVION_VDAC_POWER_DOWN_B	(2*32 + 8)	/* GPIO_3_8 */
-#define RAVION_HEADPHONE_DET		(2*32 + 26)	/* GPIO_3_26 */
+#define RAVION_26M_OSC_EN		(2*32 + 1)	/* GPIO3_1 */
+#define RAVION_LVDS_POWER_DOWN_B	(2*32 + 3)	/* GPIO3_3 */
+#define RAVION_VDAC_POWER_DOWN_B	(2*32 + 8)	/* GPIO3_8 */
+#define RAVION_HEADPHONE_DET		(2*32 + 26)	/* GPIO3_26 */
 
-#define RAVION_VADC_RESET_B		(3*32 + 11)	/* GPIO_4_11 */
-#define RAVION_VADC_POWER_DOWN_B	(3*32 + 12)	/* GPIO_4_12 */
-#define RAVION_USB_CLK_EN_B		(3*32 + 13)	/* GPIO_4_13 */
-#define RAVION_3V3_ON			(3*32 + 15)	/* GPIO_4_15 */
-#define RAVION_CSPI1_SS0_GPIO		(3*32 + 24)	/* GPIO_4_24 */
-#define RAVION_AUDIO_CLK_EN_B		(3*32 + 26)	/* GPIO_4_26 */
+#define RAVION_VADC_RESET_B		(3*32 + 11)	/* GPIO4_11 */
+#define RAVION_VADC_POWER_DOWN_B	(3*32 + 12)	/* GPIO4_12 */
+#define RAVION_USB_CLK_EN_B		(3*32 + 13)	/* GPIO4_13 */
+#define RAVION_3V3_ON			(3*32 + 15)	/* GPIO4_15 */
+#define RAVION_CSPI1_SS0_GPIO		(3*32 + 24)	/* GPIO4_24 */
+#define RAVION_AUDIO_CLK_EN_B		(3*32 + 26)	/* GPIO4_26 */
 
-extern int __init mx51_babbage_init_mc13892(void);
+extern int __init mx51_ravion_init_mc13892(void);
 extern struct cpu_wp *(*get_cpu_wp)(int *wp);
 extern void (*set_num_cpu_wp)(int num);
 extern struct dvfs_wp *(*get_dvfs_core_wp)(int *wp);
@@ -889,8 +889,8 @@ static void adv7180_pwdn(int pwdn)
 		gpio_direction_output(RAVION_VADC_POWER_DOWN_B, 0);
 	else
 		gpio_direction_output(RAVION_VADC_POWER_DOWN_B, 1);
-		
 }
+
 static struct mxc_tvin_platform_data adv7180_data = {
 	.dvddio_reg = NULL,
 	.dvdd_reg = NULL,
@@ -899,6 +899,7 @@ static struct mxc_tvin_platform_data adv7180_data = {
 	.pwdn = adv7180_pwdn,
 	.reset = NULL,
 };
+
 static struct i2c_board_info mxc_i2c1_board_info[] __initdata = {
 	{
 	 .type = "sgtl5000-i2c",
@@ -1118,7 +1119,7 @@ static void __init fixup_mxc_board(struct machine_desc *desc, struct tag *tags,
 	set_num_cpu_wp = mx51_ravion_set_num_cpu_wp;
 	get_dvfs_core_wp = mx51_ravion_get_dvfs_core_table;
         num_cpu_wp = ARRAY_SIZE(cpu_wp_auto);
-               
+
 	for_each_tag(mem_tag, tags) {
 		if (mem_tag->hdr.tag == ATAG_MEM) {
 			total_mem = mem_tag->u.mem.size;
@@ -1544,7 +1545,7 @@ static void __init mxc_board_init(void)
 	mxc_register_device(&mxc_nandv2_mtd_device, &mxc_nand_data);
 #endif
 
-	mx51_babbage_init_mc13892();
+	mx51_ravion_init_mc13892();
 
 	//if (board_is_rev(BOARD_REV_2))
 		/* BB2.5 */
